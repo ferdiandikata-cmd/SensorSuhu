@@ -12,19 +12,6 @@ Sistem monitoring suhu dan kelembaban ruangan berbasis IoT dengan notifikasi vis
 
 ---
 
-## 📋 Daftar Isi
-- [Fitur](#-fitur)
-- [Komponen Hardware](#-komponen-hardware)
-- [Diagram Koneksi (Wokwi)](#-diagram-koneksi-wokwi)
-- [Instalasi Software](#-instalasi-software)
-- [Konfigurasi Blynk](#-konfigurasi-blynk)
-- [Upload Program](#-upload-program)
-- [Cara Kerja](#-cara-kerja)
-- [Troubleshooting](#-troubleshooting)
-- [Lisensi](#-lisensi)
-
----
-
 ## ✨ Fitur
 - 📊 Monitoring suhu & kelembaban real-time
 - 🖥️ Tampilan LCD 1602 I2C 16x2
