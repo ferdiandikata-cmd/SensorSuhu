@@ -13,8 +13,8 @@
 #define BLYNK_AUTH_TOKEN "gehMFy7l9ZhjPXfeeVl5TnT2XFzteqy8"
 
 // ========== KONFIGURASI WIFI ==========
-char ssid[] = "terimakasihade";
-char pass[] = "akusayangbiznet";
+char ssid[] = "Wokwi-GUEST"; //Ini adalah jaringan virtual, jadi sesuaikan dengan wifi yang ada
+char pass[] = "";
 
 // ========== LIBRARY ==========
 #include <WiFi.h>
