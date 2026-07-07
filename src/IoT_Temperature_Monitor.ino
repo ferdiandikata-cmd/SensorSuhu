@@ -1,20 +1,11 @@
-/*
- * IoT Room Temperature Monitor
- * Kelompok: Manut
- * Mikrokontroler: ESP32 DevKitC V4
- * Sensor: DHT22
- * Output: LCD 1602 I2C, Buzzer, 3x LED
- * Platform: Blynk IoT
- */
-
 // ========== KONFIGURASI BLYNK ==========
 #define BLYNK_TEMPLATE_ID "TMPL6v_0Uv5Tw"
 #define BLYNK_TEMPLATE_NAME "Temperature Monitor"
 #define BLYNK_AUTH_TOKEN "gehMFy7l9ZhjPXfeeVl5TnT2XFzteqy8"
 
 // ========== KONFIGURASI WIFI ==========
-char ssid[] = "Wokwi-GUEST"; //Ini adalah jaringan virtual, jadi sesuaikan dengan wifi yang ada
-char pass[] = "";
+char ssid[] = "Wokwi-GUEST";        // Ganti dengan SSID WiFi Anda
+char pass[] = "";    // Ganti dengan Password WiFi Anda
 
 // ========== LIBRARY ==========
 #include <WiFi.h>
@@ -31,107 +22,106 @@ char pass[] = "";
 #define LED_JINGGA 27
 #define LED_HIJAU 14
 
-// ========== KONSTANTA SUHU ==========
-const float BATAS_NORMAL = 28.0;
-const float BATAS_BAHAYA = 35.0;
-
 // ========== INISIALISASI ==========
 DHT dht(DHTPIN, DHTTYPE);
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 BlynkTimer timer;
 
-// ========== VARIABEL GLOBAL ==========
-float suhu = 0;
-float kelembaban = 0;
-String statusSistem = "NORMAL ✅";
-
 // ========== SETUP ==========
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n==================================");
-  Serial.println("📟 IoT TEMPERATURE MONITOR - Manut");
+  
+  // === DEBUG: TAMPILAN AWAL ===
   Serial.println("==================================");
-
-  // Inisialisasi Sensor
+  Serial.println("📟 ESP32 STARTING...");
+  Serial.println("==================================");
+  
+  // === INISIALISASI SENSOR ===
   Serial.print("🔧 Inisialisasi DHT22... ");
   dht.begin();
   Serial.println("✅ Selesai");
-
-  // Inisialisasi LCD
-  Serial.print("🔧 Inisialisasi LCD I2C... ");
+  
+  // === INISIALISASI LCD ===
+  Serial.print("🔧 Inisialisasi LCD... ");
   lcd.init();
   lcd.backlight();
   Serial.println("✅ Selesai");
-
-  // Setup Pin Output
+  
+  // === SETUP PIN ===
   Serial.print("🔧 Setup pin LED & Buzzer... ");
   pinMode(BUZZER_PIN, OUTPUT);
   pinMode(LED_MERAH, OUTPUT);
   pinMode(LED_JINGGA, OUTPUT);
   pinMode(LED_HIJAU, OUTPUT);
   Serial.println("✅ Selesai");
-
-  // Tampilan Awal LCD
+  
+  // === TAMPILAN DI LCD ===
   lcd.setCursor(0, 0);
   lcd.print("  Connecting..  ");
   lcd.setCursor(0, 1);
   lcd.print("  to Blynk...   ");
-
-  // Koneksi WiFi
+  
+  // === KONEKSI WIFI ===
   Serial.print("📶 Menghubungkan ke WiFi: ");
   Serial.println(ssid);
+  
   WiFi.begin(ssid, pass);
-
+  
   int percobaan = 0;
   while (WiFi.status() != WL_CONNECTED && percobaan < 30) {
     delay(500);
     Serial.print(".");
     percobaan++;
   }
-
+  
   if (WiFi.status() == WL_CONNECTED) {
-    Serial.println("\n✅ WiFi Terhubung!");
-    Serial.print("📡 IP Address: ");
+    Serial.println("");
+    Serial.print("✅ WiFi Terhubung! IP: ");
     Serial.println(WiFi.localIP());
   } else {
-    Serial.println("\n❌ GAGAL KONEK WIFI! Cek SSID/Password!");
+    Serial.println("");
+    Serial.println("❌ GAGAL KONEK WIFI! Cek SSID/Password!");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("  WiFi ERROR!   ");
     lcd.setCursor(0, 1);
     lcd.print("  Cek SSID/PW   ");
   }
-
-  // Koneksi Blynk
+  
+  // === KONEKSI BLYNK ===
   Serial.print("📡 Menghubungkan ke Blynk... ");
   Blynk.config(BLYNK_AUTH_TOKEN);
   Blynk.connect();
-
+  
+  // Tunggu koneksi Blynk (max 10 detik)
   int timeout = 0;
   while (!Blynk.connected() && timeout < 20) {
     delay(500);
     Serial.print(".");
     timeout++;
   }
-
+  
   if (Blynk.connected()) {
-    Serial.println("\n✅ Blynk Terhubung!");
+    Serial.println("");
+    Serial.println("✅ Blynk Terhubung!");
   } else {
-    Serial.println("\n❌ GAGAL KONEK BLYNK! Cek Auth Token/Template ID!");
+    Serial.println("");
+    Serial.println("❌ GAGAL KONEK BLYNK! Cek Auth Token/Template ID!");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("  Blynk ERROR!  ");
     lcd.setCursor(0, 1);
     lcd.print("  Cek Token!    ");
   }
-
-  // Setup Timer (kirim data setiap 2 detik)
+  
+  // === TIMER ===
   timer.setInterval(2000L, kirimDataKeBlynk);
-
+  
+  // === SELESAI ===
   Serial.println("==================================");
   Serial.println("✅ SETUP SELESAI! MASUK KE LOOP...");
-  Serial.println("==================================\n");
-
+  Serial.println("==================================");
+  
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("  Connected!    ");
@@ -140,96 +130,78 @@ void setup() {
 
 // ========== FUNGSI KIRIM DATA KE BLYNK ==========
 void kirimDataKeBlynk() {
-  // Baca data dari sensor
-  suhu = dht.readTemperature();
-  kelembaban = dht.readHumidity();
-
-  // Cek pembacaan sensor
+  Serial.println("🔄 kirimDataKeBlynk() dipanggil...");
+  
+  float suhu = dht.readTemperature();
+  float kelembaban = dht.readHumidity();
+  
+  Serial.print("   📊 Suhu: "); Serial.print(suhu);
+  Serial.print(" | Kelembaban: "); Serial.println(kelembaban);
+  
   if (isnan(suhu) || isnan(kelembaban)) {
-    Serial.println("❌ ERROR: Gagal membaca DHT22!");
+    Serial.println("❌ Gagal baca DHT22!");
     lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("  ERROR SENSOR  ");
     lcd.setCursor(0, 1);
     lcd.print("  Cek Kabel!    ");
     
-    // Matikan semua output
-    matikanSemuaOutput();
+    digitalWrite(LED_HIJAU, LOW);
+    digitalWrite(LED_JINGGA, LOW);
+    digitalWrite(LED_MERAH, LOW);
+    noTone(BUZZER_PIN);
     return;
   }
-
-  // Update status berdasarkan suhu
-  updateStatusSuhu();
-
-  // Kirim data ke Blynk
+  
+  // Kirim ke Blynk
   if (Blynk.connected()) {
     Blynk.virtualWrite(V0, suhu);
     Blynk.virtualWrite(V1, kelembaban);
-    Blynk.virtualWrite(V2, statusSistem);
   } else {
-    Serial.println("⚠️ Blynk tidak terhubung!");
+    Serial.println("⚠️ Blynk tidak terhubung, data tidak dikirim!");
   }
-
-  // Update LCD
-  updateLCD();
-
-  // Tampilkan di Serial Monitor
-  Serial.print("🌡️ Suhu: ");
-  Serial.print(suhu, 1);
-  Serial.print("°C | 💧 Kelembaban: ");
-  Serial.print(kelembaban, 1);
-  Serial.print("% | 📊 Status: ");
-  Serial.println(statusSistem);
-}
-
-// ========== UPDATE STATUS SUHU ==========
-void updateStatusSuhu() {
-  if (suhu < BATAS_NORMAL) {
-    statusSistem = "NORMAL ✅";
+  
+  // Tentukan status
+  String status;
+  if (suhu < 28) {
+    status = "NORMAL ✅";
     digitalWrite(LED_HIJAU, HIGH);
     digitalWrite(LED_JINGGA, LOW);
     digitalWrite(LED_MERAH, LOW);
     noTone(BUZZER_PIN);
-  }
-  else if (suhu >= BATAS_NORMAL && suhu <= BATAS_BAHAYA) {
-    statusSistem = "PANAS 🔶";
+  } 
+  else if (suhu >= 28 && suhu <= 35) {
+    status = "PANAS 🔶";
     digitalWrite(LED_HIJAU, LOW);
     digitalWrite(LED_JINGGA, HIGH);
     digitalWrite(LED_MERAH, LOW);
     noTone(BUZZER_PIN);
-  }
-  else { // suhu > 35°C
-    statusSistem = "BAHAYA! 🔴";
+  } 
+  else {
+    status = "BAHAYA! 🔴";
     digitalWrite(LED_HIJAU, LOW);
     digitalWrite(LED_JINGGA, LOW);
     digitalWrite(LED_MERAH, HIGH);
-    tone(BUZZER_PIN, 1500); // Buzzer bunyi 1500Hz
+    tone(BUZZER_PIN, 1500);
     Serial.println("⚠️ PERINGATAN! Suhu melebihi 35°C!");
   }
-}
-
-// ========== UPDATE LCD ==========
-void updateLCD() {
+  
+  if (Blynk.connected()) {
+    Blynk.virtualWrite(V2, status);
+  }
+  
+  // LCD
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("T:");
-  lcd.print(suhu, 1);
-  lcd.print("C ");
-  lcd.print("H:");
-  lcd.print(kelembaban, 1);
-  lcd.print("%");
-
+  lcd.print("T:"); lcd.print(suhu, 1); lcd.print("C ");
+  lcd.print("H:"); lcd.print(kelembaban, 1); lcd.print("%");
   lcd.setCursor(0, 1);
-  lcd.print("ST: ");
-  lcd.print(statusSistem);
-}
-
-// ========== MATIKAN SEMUA OUTPUT ==========
-void matikanSemuaOutput() {
-  digitalWrite(LED_HIJAU, LOW);
-  digitalWrite(LED_JINGGA, LOW);
-  digitalWrite(LED_MERAH, LOW);
-  noTone(BUZZER_PIN);
+  lcd.print("ST: "); lcd.print(status);
+  
+  // Serial Monitor
+  Serial.print("🌡️ Suhu: "); Serial.print(suhu, 1);
+  Serial.print("°C | 💧 Kelembaban: "); Serial.print(kelembaban, 1);
+  Serial.print("% | 📊 Status: "); Serial.println(status);
 }
 
 // ========== LOOP ==========
@@ -239,8 +211,8 @@ void loop() {
   delay(10);
 }
 
-// ========== EVENT BLYNK TERHUBUNG ==========
+// ========== KETIKA BLYNK TERHUBUNG ==========
 BLYNK_CONNECTED() {
   Blynk.syncAll();
-  Serial.println("✅ BLYNK_CONNECTED() - Sinkronisasi selesai!");
+  Serial.println("✅ BLYNK_CONNECTED() dipanggil!");
 }
