@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "author": "IoT Temperature Monitor",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "wokwi-breadboard", "id": "bb1", "top": -367.8, "left": -486.8, "attrs": {} },
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -144, "left": -263.96, "attrs": {} },
+    {
+      "type": "wokwi-dht22",
+      "id": "dht1",
+      "top": -134.1,
+      "left": -543,
+      "attrs": { "temperature": "30.7", "humidity": "45.5" }
+    },
+    {
+      "type": "wokwi-lcd1602",
+      "id": "lcd1",
+      "top": -128,
+      "left": -13.6,
+      "attrs": { "pins": "i2c" }
+    },
+    {
+      "type": "wokwi-buzzer",
+      "id": "bz2",
+      "top": -285.6,
+      "left": -631.8,
+      "attrs": { "volume": "0.1" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led1",
+      "top": -147.6,
+      "left": -130.6,
+      "attrs": { "color": "red" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led2",
+      "top": -99.6,
+      "left": -130.6,
+      "attrs": { "color": "orange" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led3",
+      "top": -42,
+      "left": -130.6,
+      "attrs": { "color": "limegreen" }
+    }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:GND.2", "bb1:bn.5", "black", [ "v-38.4", "h-115.2", "h-115.2", "v-19.2", "h-8.8" ] ],
+    [ "esp:3V3", "bb1:bp.5", "red", [ "v-28.8", "h-28.65", "h-124" ] ],
+    [ "esp:5V", "bb1:tp.1", "red", [ "h-47.85", "v-432", "h-133.6" ] ],
+    [ "esp:GND.1", "bb1:tn.1", "black", [ "h-28.65", "v-144", "h-134.4", "v-211.1" ] ],
+    [ "bb1:tn.50", "bb1:bn.50", "black", [] ],
+    [ "bz2:1", "bb1:bn.1", "black", [] ],
+    [ "bz2:2", "esp:12", "purple", [] ],
+    [ "dht1:GND", "bb1:bn.2", "black", [] ],
+    [ "dht1:VCC", "bb1:bp.1", "red", [] ],
+    [ "dht1:SDA", "esp:13", "green", [] ],
+    [ "lcd1:GND", "bb1:tn.34", "black", [] ],
+    [ "lcd1:VCC", "bb1:tp.35", "red", [] ],
+    [ "lcd1:SDA", "esp:21", "cyan", [] ],
+    [ "lcd1:SCL", "esp:22", "cyan", [] ],
+    [ "led1:C", "bb1:bn.26", "black", [] ],
+    [ "led2:C", "bb1:bn.27", "black", [] ],
+    [ "led3:C", "bb1:bn.28", "black", [] ],
+    [ "led1:A", "esp:26", "red", [] ],
+    [ "led2:A", "esp:27", "gold", [] ],
+    [ "led3:A", "esp:14", "green", [] ]
+   ],
+  "dependencies": {},
+  "wifi": {
+    "ssid": "terimakasihade",
+    "password": "akusayangbiznet"
+  }
+}
