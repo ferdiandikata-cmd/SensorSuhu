@@ -1,0 +1,13 @@
+IoT-Room-Temperature-Monitor/
+├── src/
+│   └── IoT_Temperature_Monitor.ino    # Kode utama
+├── docs/
+│   ├── wiring_diagram.md              # Diagram koneksi
+│   └── images/
+│       └── (gambar diagram)
+├── wokwi/
+│   ├── diagram.json                   # Konfigurasi Wokwi
+│   └── sketch.ino                     # Kode untuk Wokwi
+├── .gitignore
+├── LICENSE
+└── README.md                          # File ini
