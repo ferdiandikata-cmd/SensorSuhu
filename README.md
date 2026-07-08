@@ -138,8 +138,8 @@ char ssid[] = "terimakasihade";
 char pass[] = "akusayangbiznet";
 
 // Untuk penggunaan nyata, ganti dengan WiFi Anda
-// char ssid[] = "Nama_WiFi_Anda";
-// char pass[] = "Password_WiFi_Anda"; 
+// char ssid[] = "";--> Sesuaikan dengan SSID ditempat
+// char pass[] = ""; --> beserta sandinya
 ```
 
 #☁️ Konfigurasi Blynk
