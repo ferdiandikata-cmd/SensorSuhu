@@ -1,4 +1,5 @@
 # SensorSuhu
+### Perlu diperhatikan!, "IoT_Temperature_Monitor.ino" adalah code untuk wokwi, sedangkan Temperature_Monitor.ino adalah coding untuk alat asli.
 # 🌡️ IoT Room Temperature Monitor
 
 ![ESP32](https://img.shields.io/badge/ESP32-DevKitC%20V4-blue)
