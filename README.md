@@ -134,8 +134,8 @@ Edit kode di bagian **KONFIGURASI WIFI**:
 
 ```cpp
 // Untuk simulasi Wokwi (seperti di diagram.json)
-char ssid[] = "terimakasihade";
-char pass[] = "akusayangbiznet";
+char ssid[] = "";
+char pass[] = "";
 
 // Untuk penggunaan nyata, ganti dengan WiFi Anda
 // char ssid[] = "";--> Sesuaikan dengan SSID ditempat
